@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClientApp.Models.User" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACCAQAAAAAAAAAAAQAAAAABAAgAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Models.ImageData" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAAAgAAAgAAAAAAQAAAAAABACAAAAAAAAIAA=</HashCode>
+      <FileName>Models\ImageData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Models.Gallery" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Gallery.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Models.Comment" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Models\Comment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.CommentRequest" Collapsed="true">
+    <Position X="3.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAEAAAAAAAAAAIAABAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Requests\CommentRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.DeleteGalleryRequest" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Requests\DeleteGalleryRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.EditGalleryRequest" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Requests\EditGalleryRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.ImageEditRequest" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAQAAAAQAAIAAABEAAAAAAAAAAAA=</HashCode>
+      <FileName>Requests\ImageEditRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.ImageRequest" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAQAAAAQAAIAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Requests\ImageRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.LikeRequest" Collapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAIAABAAAAAAAAAAABAA=</HashCode>
+      <FileName>Requests\LikeRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Requests.UserRequest" Collapsed="true">
+    <Position X="1.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Requests\UserRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientApp.Servecies.GalleriesService" Collapsed="true">
+    <Position X="3" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYCAAAAAAAAAABIAAAAARAAAAEACAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Servecies\GalleriesService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ClientApp.Servecies.ImageService" Collapsed="true">
+    <Position X="5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYCAAAAAAAAAABAAAAAAQAAAAEAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Servecies\ImageService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ClientApp.Servecies.JsonFileManager" Collapsed="true">
+    <Position X="10.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAASAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Servecies\JsonFileManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ClientApp.Servecies.RegisterService" Collapsed="true">
+    <Position X="7" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAE=</HashCode>
+      <FileName>Servecies\RegisterService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ClientApp.Servecies.ViewGalleryService" Collapsed="true">
+    <Position X="9" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAYAAAAAAAAAAAAAQQAAAEgAAAAgAAAAAECAAA=</HashCode>
+      <FileName>Servecies\ViewGalleryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.248" />
+  </Class>
+  <Interface Name="ClientApp.Interfaces.IBaseService" Collapsed="true">
+    <Position X="7" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IBaseService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ClientApp.Interfaces.IGallaryService" Collapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAABAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IGallaryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ClientApp.Interfaces.IImageService" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAABAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IImageService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ClientApp.Interfaces.IJsonFileManager" Collapsed="true">
+    <Position X="10.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Interfaces\IJsonFileManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ClientApp.Interfaces.IRegisterService" Collapsed="true">
+    <Position X="7" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Interfaces\IRegisterService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ClientApp.Interfaces.IViewGallerySrvice" Collapsed="true">
+    <Position X="9" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAYAAAAAAAAAAAAAAQAAAEgAAAAAAAAAAECAAA=</HashCode>
+      <FileName>Interfaces\IViewGallerySrvice.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

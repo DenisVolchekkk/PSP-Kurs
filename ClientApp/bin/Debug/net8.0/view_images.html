@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Galleries</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="gallery-container"> 
+        <aside class="sidebar">
+            <button onclick="navigateToAddImage()">Вернуться к странице загрузки</button>
+			<button onclick="window.location.href = 'view_galleries.html'">Вернуться к галереям</button>
+            <input type="text" id="username" placeholder="Your username">
+            <button onclick="viewGallery()">Просмотреть галерею</button>
+            <h2>Поделиться галерей</h2>
+            <input type="text" id="invitee" placeholder="Введите имя приглашенного">
+            <button onclick="sendInvite()">Приглашение</button>
+
+            <h2>Приглашения</h2>
+            <div id="invitationsContainer"></div>
+        </aside>
+        <main class="gallery-display">
+            <div id="galleryContainer"></div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const username = sessionStorage.getItem("username");
+
+            if (username) {
+                document.getElementById("username").value = username;
+                document.getElementById("username").disabled = true; // Блокируем поле
+            } else {
+                alert("Please register first.");
+                window.location.href = "register.html";
+            }
+			
+            loadInvitations();
+        });
+		
+		function navigateToAddImage() {
+			const galleryId = sessionStorage.getItem("Gallaryid");
+			window.location.href = `upload_image.html?galleryId=${galleryId}`;
+		}
+		
+        function viewGallery() {
+            const username = sessionStorage.getItem("username");
+            const galleryId = sessionStorage.getItem("Gallaryid");
+			console.log('fe')
+            fetch(`/getgallery?username=${encodeURIComponent(username)}&galleryId=${encodeURIComponent(galleryId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const galleryContainer = document.getElementById("galleryContainer");
+                    galleryContainer.innerHTML = "";
+
+                    // Отображаем информацию о галерее
+                    const galleryTitle = document.createElement("h2");
+                    galleryTitle.textContent = `${data.Name}`;
+                    galleryContainer.appendChild(galleryTitle);
+
+                    const galleryId = document.createElement("p");
+                    data.Images.forEach(image => {
+                        const imageDiv = document.createElement("div");
+                        imageDiv.className = "gallery-item";
+
+                        const imgElement = document.createElement("img");
+                        imgElement.src = `data:image/jpeg;base64,${image.Image}`;
+                        imgElement.alt = image.Name;
+                        imageDiv.appendChild(imgElement);
+
+                        const titleElement = document.createElement("h3");
+                        titleElement.textContent = image.Name;
+                        imageDiv.appendChild(titleElement);
+
+                        const descriptionElement = document.createElement("p");
+                        descriptionElement.textContent = image.Description;
+                        imageDiv.appendChild(descriptionElement);
+
+						const likeButton = document.createElement("button");
+						likeButton.textContent = `Like (${image.Likes})`;
+						likeButton.className = image.LikedBy.includes(username) ? "like-button green" : "like-button gray";
+						likeButton.onclick = () => likeImage({ 
+							Username: username, 
+							GalleryId: data.Id, // ID текущей галереи
+							ImageName: image.Name,
+							InviteUsername: null
+						});
+						imageDiv.appendChild(likeButton);
+
+
+
+						const commentsDiv = document.createElement("div");
+						commentsDiv.className = "comments-section";
+						commentsDiv.style.display = "none"; // Скрываем комментарии по умолчанию
+
+						image.Comments.forEach(comment => {
+							const commentElement = document.createElement("p");
+							commentElement.textContent = `${comment.Username}: ${comment.Text}`;
+							commentsDiv.appendChild(commentElement);
+						});
+
+						const commentInput = document.createElement("input");
+						commentInput.type = "text";
+						commentInput.placeholder = "Добавить комментарий...";
+						commentsDiv.appendChild(commentInput);
+
+						const commentButton = document.createElement("button");
+						commentButton.textContent = "Отправить";
+						commentButton.onclick = () => postComment({
+							GalleryOwner: username,
+							GalleryId: data.Id,
+							ImageName: image.Name,
+							Commenter: username,
+							CommentText: commentInput.value
+						});
+						commentsDiv.appendChild(commentButton);
+
+						// Добавляем кнопку для скрытия/отображения комментариев
+						const toggleCommentsButton = document.createElement("button");
+						toggleCommentsButton.textContent = "Скрыть комментарии";
+						toggleCommentsButton.onclick = () => {
+							commentsDiv.style.display = commentsDiv.style.display === "none" ? "block" : "none";
+						};
+						
+						imageDiv.appendChild(toggleCommentsButton);
+
+						imageDiv.appendChild(commentsDiv);
+						
+						const editButton = document.createElement("button");
+						editButton.textContent = "Редактировать картинку";
+						editButton.onclick = () => window.location.href = `edit_image.html?galleryId=${data.Id}&imageId=${image.Id}`;
+						imageDiv.appendChild(editButton);
+						const deleteButton = document.createElement("button");
+						deleteButton.textContent = "Удалить картинку";
+						deleteButton.onclick = () => deleteImage(username, data.Id, image.Id);
+
+
+						imageDiv.appendChild(deleteButton);
+                        imageDiv.appendChild(commentsDiv);
+                        galleryContainer.appendChild(imageDiv);
+                    });
+                })
+                .catch(error => console.error("Error loading gallery:", error));
+        }
+
+        function postComment(commentRequest) {
+            fetch("/addComment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(commentRequest)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Comment added!");
+                        viewGallery();
+						console.log('fe')
+                    } else {
+                        alert("Failed to add comment.");
+                    }
+                })
+                .catch(error => console.error("Error adding comment:", error));
+        }
+        function postCommentInviter(commentRequest, inviter, gallaryId) {
+            fetch("/addComment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(commentRequest)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Comment added!");
+                        viewInviteGallery(inviter, gallaryId);
+                    } else {
+                        alert("Failed to add comment.");
+                    }
+                })
+                .catch(error => console.error("Error adding comment:", error));
+        }
+		function likeImage(likeRequest) {
+			fetch("/likeImage", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(likeRequest)
+			})
+			.then(response => {
+				if (response.ok) {
+					alert("Image liked!");
+					viewGallery(); // Обновляем галерею после лайка
+				} else if (response.status === 409) {
+					alert("You have already liked this image.");
+				} else if (response.status === 404) {
+					alert("Image not found.");
+				} else {
+					alert("Error liking the image.");
+				}
+			})
+			.catch(error => console.error("Error liking the image:", error));
+		}
+		function likeImageInviter(likeRequest, inviter, gallaryId) {
+			fetch("/likeImage", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(likeRequest)
+			})
+			.then(response => {
+				if (response.ok) {
+					alert("Image liked!");
+					viewInviteGallery(inviter, gallaryId); // Обновляем галерею после лайка
+				} else if (response.status === 409) {
+					alert("You have already liked this image.");
+				} else if (response.status === 404) {
+					alert("Image not found.");
+				} else {
+					alert("Error liking the image.");
+				}
+			})
+			.catch(error => console.error("Error liking the image:", error));
+		}
+        function sendInvite() {
+            const username = document.getElementById("username").value;
+            const invitee = document.getElementById("invitee").value;
+            const galleryId = sessionStorage.getItem("Gallaryid"); 
+
+            if (!invitee || !galleryId) {
+                alert("Please fill in both the invitee username and the gallery ID.");
+                return;
+            }
+
+            fetch(`/inviteuser?username=${encodeURIComponent(username)}&invitee=${encodeURIComponent(invitee)}&galleryId=${encodeURIComponent(galleryId)}`, {
+                method: "POST"
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Invitation sent successfully!");
+                    loadInvitations();
+                } else {
+                    alert("Failed to send the invitation.");
+                }
+            })
+            .catch(error => console.error("Error sending invitation:", error));
+        }
+		function deleteImage(username, galleryId, imageId) {
+			if (confirm("Are you sure you want to delete this image?")) {
+				fetch(`/deleteimage`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						Username: username,
+						GalleryId: galleryId,
+						ImageId: imageId
+					})
+				})
+				.then(response => {
+					if (response.ok) {
+						alert("Image deleted successfully");
+						viewGallery(); // Обновляем галерею после удаления
+					} else {
+						alert("Error deleting image");
+					}
+				})
+				.catch(error => console.error("Error deleting image:", error));
+			}
+		}
+
+		function loadInvitations() {
+			const username = sessionStorage.getItem("username");
+			fetch(`/getinvitations?username=${encodeURIComponent(username)}`)
+				.then(response => response.json())
+				.then(data => {
+					const invitationsContainer = document.getElementById("invitationsContainer");
+					invitationsContainer.innerHTML = ""; // Очищаем контейнер перед загрузкой приглашений
+
+					data.forEach(invitation => {
+						// Разделяем строку приглашения в формате "username|galleryId"
+						const [inviter, galleryId] = invitation.split("|");
+
+						// Создаём элемент для отображения приглашения
+						const invitationElement = document.createElement("div");
+						invitationElement.className = "invitation";
+
+						const textElement = document.createElement("p");
+						textElement.textContent = `Приглашение от ${inviter} к галереи номер ${galleryId}`;
+						invitationElement.appendChild(textElement);
+
+						// Кнопка для принятия приглашения
+						const acceptButton = document.createElement("button");
+						acceptButton.textContent = "Принять";
+						acceptButton.onclick = () => acceptInvitation(inviter, galleryId);
+						invitationElement.appendChild(acceptButton);
+
+						// Кнопка для отклонения приглашения
+						const declineButton = document.createElement("button");
+						declineButton.textContent = "Отклонить";
+						declineButton.onclick = () => declineInvitation(inviter, galleryId);
+						invitationElement.appendChild(declineButton);
+
+						invitationsContainer.appendChild(invitationElement);
+					});
+				})
+				.catch(error => console.error("Error loading invitations:", error));
+		}
+         function viewInviteGallery(inviter, gallaryId) {
+			const username = sessionStorage.getItem("username");
+            fetch(`/getgallery?username=${encodeURIComponent(inviter)}&galleryId=${encodeURIComponent(gallaryId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const galleryContainer = document.getElementById("galleryContainer");
+                    galleryContainer.innerHTML = "";
+
+                    // Отображаем информацию о галерее
+                    const galleryTitle = document.createElement("h2");
+                    galleryTitle.textContent = `${data.Name}`;
+                    galleryContainer.appendChild(galleryTitle);
+
+                    const galleryId = document.createElement("p");
+
+                    data.Images.forEach(image => {
+                        const imageDiv = document.createElement("div");
+                        imageDiv.className = "gallery-item";
+
+                        const imgElement = document.createElement("img");
+                        imgElement.src = `data:image/jpeg;base64,${image.Image}`;
+                        imgElement.alt = image.Name;
+                        imgElement.style.maxWidth = "1920px";
+                        imageDiv.appendChild(imgElement);
+
+                        const titleElement = document.createElement("h3");
+                        titleElement.textContent = image.Name;
+                        imageDiv.appendChild(titleElement);
+
+                        const descriptionElement = document.createElement("p");
+                        descriptionElement.textContent = image.Description;
+                        imageDiv.appendChild(descriptionElement);
+
+						const likeButton = document.createElement("button");
+						likeButton.textContent = `Like (${image.Likes})`;
+						likeButton.className = image.LikedBy.includes(username) ? "like-button green" : "like-button gray";
+						likeButton.onclick = () => likeImageInviter({ 
+							Username: inviter, 
+							GalleryId: gallaryId, // ID текущей галереи
+							ImageName: image.Name,
+							InviteUsername: username
+						}, inviter, gallaryId);
+						imageDiv.appendChild(likeButton);
+						
+						const commentsDiv = document.createElement("div");
+						commentsDiv.className = "comments-section";
+						commentsDiv.style.display = "none"; // Скрываем комментарии по умолчанию
+
+						image.Comments.forEach(comment => {
+							const commentElement = document.createElement("p");
+							commentElement.textContent = `${comment.Username}: ${comment.Text}`;
+							commentsDiv.appendChild(commentElement);
+						});
+
+						const commentInput = document.createElement("input");
+						commentInput.type = "text";
+						commentInput.placeholder = "Добавить комментарий...";
+						commentsDiv.appendChild(commentInput);
+
+						const commentButton = document.createElement("button");
+						commentButton.textContent = "Отправить";
+						commentButton.onclick = () => postCommentInviter({
+							GalleryOwner: inviter,
+							GalleryId: data.Id,
+							ImageName: image.Name,
+							Commenter: username,
+							CommentText: commentInput.value
+						}, inviter, gallaryId);
+						commentsDiv.appendChild(commentButton);
+
+						// Добавляем кнопку для скрытия/отображения комментариев
+						const toggleCommentsButton = document.createElement("button");
+						toggleCommentsButton.textContent = "Скрыть комментарии";
+						toggleCommentsButton.onclick = () => {
+							commentsDiv.style.display = commentsDiv.style.display === "none" ? "block" : "none";
+						};
+						
+						imageDiv.appendChild(toggleCommentsButton);
+
+						imageDiv.appendChild(commentsDiv);
+
+                         galleryContainer.appendChild(imageDiv);
+                    });
+                })
+                .catch(error => console.error("Error loading gallery:", error));
+        }
+
+		function acceptInvitation(inviter, galleryId) {
+			const username = sessionStorage.getItem("username");
+			fetch(`/acceptinvitation?username=${encodeURIComponent(username)}&invitation=${encodeURIComponent(inviter)}&galleryId=${encodeURIComponent(galleryId)}`)
+				.then(response => {
+					if (response.ok) {
+						alert("Invitation accepted!");
+						viewInviteGallery(inviter,galleryId)
+						loadInvitations(); // Обновляем список приглашений
+					} else {
+						alert("Failed to accept invitation.");
+					}
+				})
+				.catch(error => console.error("Error accepting invitation:", error));
+		}
+
+		function declineInvitation(inviter, galleryId) {
+			const username = sessionStorage.getItem("username");
+			fetch(`/removeinvitation?username=${encodeURIComponent(username)}&inviter=${encodeURIComponent(inviter)}&galleryId=${encodeURIComponent(galleryId)}`, {
+				method: "POST"
+			})
+			.then(response => {
+				if (response.ok) {
+					alert("Invitation declined.");
+					loadInvitations(); // Обновляем список приглашений
+				} else {
+					alert("Failed to decline invitation.");
+				}
+			})
+			.catch(error => console.error("Error declining invitation:", error));
+		}
+
+    </script>
+</body>
+</html>
